@@ -107,10 +107,10 @@ class CallbacksTest < Test::Unit::TestCase
     MongoRecord::Base.connection = @@db
 
     @@was_called = []
-    @@students.clear
-    @@courses.clear
-    @@tracks.clear
-    @@playlists.clear
+    @@students.remove
+    @@courses.remove
+    @@tracks.remove
+    @@playlists.remove
 
     # Manually insert data without using MongoRecord::Base
     @@tracks.insert({:_id => Mongo::ObjectID.new, :artist => 'Thomas Dolby', :album => 'Aliens Ate My Buick', :song => 'The Ability to Swing'})
@@ -133,10 +133,10 @@ class CallbacksTest < Test::Unit::TestCase
   end
 
   def teardown
-    @@students.clear
-    @@courses.clear
-    @@tracks.clear
-    @@playlists.clear
+    @@students.remove
+    @@courses.remove
+    @@tracks.remove
+    @@playlists.remove
     super
   end
 
@@ -146,16 +146,11 @@ class CallbacksTest < Test::Unit::TestCase
     assert_equal true, t.new_record?
     t.save
     assert_equal false, t.new_record?
-    puts $callbacks_called.inspect
 
     assert_equal [:before_save, :before_create, :after_create, :after_save], $callbacks_called
     assert_equal 'Your Unpleasant Family,before_save,before_create', t.song
     assert_equal 8, t.track
 
-    t2 = Track1.find_by_id(99)
-    assert_equal t.song, t2.song
-    assert_equal t.track, t2.track
-    
     $callbacks_called = []
     t.track = 7
     t.save

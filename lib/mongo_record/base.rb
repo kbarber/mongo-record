@@ -419,10 +419,6 @@ module MongoRecord
       #
       # Person.update_all({:name => 'Bob'}, {:name => 'Fred'})
       # Person.update_all({'$set' => {:name => 'Bob'}, '$inc' => {:age => 1}}, {:name => 'Fred'})
-      #
-      # Note that, due to a current limitation of Mongo, you can't use $inc/$set on an
-      # indexed field.  In this case, update_all will silently fail unless :safe => true
-      # is specified.
       def update_all(updates, conditions = nil, options = {})
         all(:conditions => conditions).each do |row|
           collection.update(criteria_from(conditions).merge(:_id => row.id.to_oid), update_fields_from(updates), options)
@@ -524,19 +520,11 @@ module MongoRecord
         find_one(options)
       end
 
-      # This does not work for some reason
-      # def find_one(options)
-      #   cursor = find_every(options)
-      #   one = cursor.next_object
-      #   cursor.close  # cleanup memory
-      #   one
-      # end
-
       def find_one(options)
         one = nil
         cursor = find_every(options)
-        cursor.each{|row| one = row; break}  # short-circuit
-        cursor.close  # cleanup memory
+        one = cursor.detect {|c| c}
+        cursor.close
         one
       end
 

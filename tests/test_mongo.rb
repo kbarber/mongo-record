@@ -59,10 +59,10 @@ class MongoTest < Test::Unit::TestCase
     super
     MongoRecord::Base.connection = @@db
 
-    @@students.clear
-    @@courses.clear
-    @@tracks.clear
-    @@playlists.clear
+    @@students.remove
+    @@courses.remove
+    @@tracks.remove
+    @@playlists.remove
 
     # Manually insert data without using MongoRecord::Base
     @@tracks.insert({:_id => Mongo::ObjectID.new, :artist => 'Thomas Dolby', :album => 'Aliens Ate My Buick', :song => 'The Ability to Swing'})
@@ -85,10 +85,10 @@ class MongoTest < Test::Unit::TestCase
   end
 
   def teardown
-    @@students.clear
-    @@courses.clear
-    @@tracks.clear
-    @@playlists.clear
+    @@students.remove
+    @@courses.remove
+    @@tracks.remove
+    @@playlists.remove
     super
   end
 
@@ -749,7 +749,7 @@ class MongoTest < Test::Unit::TestCase
       # Make sure collection exists
       coll = alt_db.collection('students')
       coll.insert('name' => 'foo')
-      coll.clear
+      coll.remove
 
       assert_equal 0, coll.count()
       s = Student.new(:name => 'Spongebob Squarepants', :address => @spongebob_addr)
