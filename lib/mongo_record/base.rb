@@ -524,7 +524,7 @@ module MongoRecord
         cursor = find_every(options)
         one = cursor.detect {|c| c}
         cursor.close
-        one
+        one.nil? ? nil : new(one)
       end
 
       def find_every(options)
@@ -540,7 +540,7 @@ module MongoRecord
         cursor = collection.find(criteria, find_options)
 
         # Override cursor.next_object so it returns a new instance of this class
-        eval "def cursor.next_object; #{self.name}.new(super()); end"
+        eval "def cursor.next_document; #{self.name}.new(super()); end"
         cursor
       end
 
