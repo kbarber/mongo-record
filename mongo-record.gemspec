@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
              'lib/mongo_record/sql.rb',
              'lib/mongo_record/subobject.rb',
              'README.rdoc', 'Rakefile',
-             'mongo-activerecord-ruby.gemspec',
+             'mongo-record.gemspec',
              'LICENSE']
   s.test_files = ['tests/address.rb',
                   'tests/course.rb',

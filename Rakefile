@@ -23,9 +23,9 @@ namespace :gem do
   desc "Install the gem locally"
   task :install do
     sh <<EOS
-gem build mongo-activerecord-ruby.gemspec &&
-    sudo gem install mongo_record*.gem &&
-    rm mongo_record-*.gem
+gem build mongo-record.gemspec &&
+    gem install mongo_record*.gem &&
+    rm mongo_record*.gem
 EOS
   end
 
