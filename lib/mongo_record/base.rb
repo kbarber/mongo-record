@@ -152,9 +152,8 @@ module MongoRecord
       # or an array of fields ([:title, :author, :date])
       # or an array of a field name and direction ([:title, :asc] or [:title, :desc])
       # or an array of field names and directions ([[:title, :asc], [:author, :desc]])
-      # +unique+ should be true or false and indicates whether this index
-      # should enforce a uniqueness constraint.
-      def index(fields, unique = false)
+      # +options+ Same as options for create index in the ruby driver
+      def index(fields, options={})
         fields = Array(fields)
 
         if fields.length == 2 &&
@@ -169,7 +168,7 @@ module MongoRecord
           field
         end
 
-        collection.create_index(fields, unique)
+        collection.create_index(fields, options)
       end
 
       # Returns list of indexes for model, unless fields are passed.
