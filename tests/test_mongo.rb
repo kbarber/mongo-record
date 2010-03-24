@@ -404,7 +404,6 @@ class MongoTest < Test::Unit::TestCase
     assert_no_match(/song: Budapest by Blimp/, Track.all.inject('') { |str, t| str + t.to_s })
 
     assert_equal 6, Track.count
-    Track.index [:song, :desc], true  # reindex
   end
 
   def test_delete_all
@@ -447,9 +446,8 @@ class MongoTest < Test::Unit::TestCase
     t = Track.find_by_song('King For A Day')
     tid = t._id
     # first is string id, second is ObjectID
-    str = Track.find([@mayor_id, tid]).inject('') { |str, t| str + t.to_s }
-    assert str.include?(@mayor_str)
-    assert str.include?('King For A Day')
+    records = Track.find([@mayor_id, tid]).to_a
+    assert_equal 2, records.size
   end
 
   def test_find_one_using_id
