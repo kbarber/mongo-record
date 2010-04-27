@@ -898,7 +898,7 @@ class MongoTest < Test::Unit::TestCase
   def test_indexing
     Track.index :artist
     Track.index [:artist, :created_at]
-    Track.index [:song, :desc], true
+    Track.index [:song, :desc], :unique => true
     Track.index [:artist, [:album, :desc]]
     Track.index [:created_at, Mongo::ASCENDING]
 
