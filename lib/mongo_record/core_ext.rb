@@ -62,3 +62,19 @@ class Hash
     self.replace(self.symbolize_keys)
   end
 end
+
+class String
+
+  # Convert this String to an ObjectID.
+  def to_oid
+    BSON::ObjectID.legal?(self) ? BSON::ObjectID.from_string(self) : self
+  end
+end
+
+class BSON::ObjectID
+
+  # Convert this object to an ObjectID.
+  def to_oid
+    self
+  end
+end

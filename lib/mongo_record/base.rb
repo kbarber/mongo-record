@@ -13,22 +13,8 @@
 # limitations under the License.
 
 require 'rubygems'
-require 'mongo_record/convert'
+require 'mongo_record/core_ext'
 require 'mongo_record/sql'
-
-class String
-  # Convert this String to an ObjectID.
-  def to_oid
-    BSON::ObjectID.legal?(self) ? BSON::ObjectID.from_string(self) : self
-  end
-end
-
-class BSON::ObjectID
-  # Convert this object to an ObjectID.
-  def to_oid
-    self
-  end
-end
 
 module MongoRecord
 
