@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
 
   s.files = ['examples/tracks.rb', 'lib/mongo_record.rb',
              'lib/mongo_record/base.rb',
-             'lib/mongo_record/convert.rb',
+             'lib/mongo_record/core_ext.rb',
              'lib/mongo_record/log_device.rb',
              'lib/mongo_record/sql.rb',
              'lib/mongo_record/subobject.rb',
