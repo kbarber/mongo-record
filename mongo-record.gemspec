@@ -2,10 +2,10 @@ Gem::Specification.new do |s|
   s.name = 'mongo_record'
   s.version = '0.4.4'
   s.platform = Gem::Platform::RUBY
-  s.summary = 'ActiveRecord-like models for the MongoDB'
-  s.description = 'MongoRecord is an ActiveRecord-like framework for MongoDB. For more information about Mongo, see http://www.mongodb.org.'
+  s.summary = 'ActiveRecord-like models for MongoDB'
+  s.description = 'MongoRecord is an ActiveRecord-like framework for MongoDB. For more information about MongoDB, see http://www.mongodb.org.'
 
-  s.add_dependency('mongo', ['>= 0.15.1'])
+  s.add_dependency('mongo', ['>= 0.20.1'])
 
   s.require_paths = ['lib']
 

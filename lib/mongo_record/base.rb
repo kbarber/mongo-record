@@ -13,21 +13,17 @@
 # limitations under the License.
 
 require 'rubygems'
-require 'mongo/types/objectid'
-require 'mongo/types/code'
-require 'mongo/cursor'
 require 'mongo_record/convert'
 require 'mongo_record/sql'
-#require 'active_support/core_ext' # symbolize_keys!
 
 class String
   # Convert this String to an ObjectID.
   def to_oid
-    Mongo::ObjectID.legal?(self) ? Mongo::ObjectID.from_string(self) : self
+    BSON::ObjectID.legal?(self) ? BSON::ObjectID.from_string(self) : self
   end
 end
 
-class Mongo::ObjectID
+class BSON::ObjectID
   # Convert this object to an ObjectID.
   def to_oid
     self
@@ -40,7 +36,7 @@ module MongoRecord
     def create_pk(row)
       return row if row[:_id]
       row.delete(:_id)          # in case it is nil
-      row['_id'] ||= Mongo::ObjectID.new
+      row['_id'] ||= BSON::ObjectID.new
       row
     end
   end
@@ -320,9 +316,6 @@ module MongoRecord
       #   Person.find(:all, :offset => 10, :limit => 10, :order => :created_on)
       # is the same as
       #   Person.find(:all).skip(10).limit(10).sort({:created_on => 1})
-      #
-
-
       def find(*args)
         options = extract_options_from_args!(args)
         options.symbolize_keys!
@@ -533,9 +526,10 @@ module MongoRecord
 
         find_options = {}
         find_options[:fields] = fields_from(options[:select]) if options[:select]
-        find_options[:limit] = options[:limit].to_i if options[:limit]
+        find_options[:limit]  = options[:limit].to_i if options[:limit]
         find_options[:offset] = options[:offset].to_i if options[:offset]
-        find_options[:sort] = sort_by_from(options[:order]) if options[:order]
+        find_options[:hint]   = options[:hint] if options[:hint]
+        find_options[:sort]   = sort_by_from(options[:order]) if options[:order]
 
         cursor = collection.find(criteria, find_options)
 
@@ -669,7 +663,7 @@ module MongoRecord
       # +func+ must be +nil+ or a JavaScript expression or function in a
       # string.
       def where_func(func)    # :nodoc:
-        func ? {'$where' => Mongo::Code.new(func)} : {}
+        func ? {'$where' => BSON::Code.new(func)} : {}
       end
 
       def replace_named_bind_variables(str, h) # :nodoc:
@@ -869,11 +863,11 @@ module MongoRecord
       key_names.each {|key|
         value = instance_variable_get("@#{key}").to_mongo_value
         if value.instance_of? Hash and value["_ns"]
-          value = Mongo::DBRef.new(value["_ns"], value["_id"])
+          value = BSON::DBRef.new(value["_ns"], value["_id"])
         elsif value.instance_of? Array
           value = value.map {|v|
             if v.instance_of? Hash and v["_ns"]
-              Mongo::DBRef.new(v["_ns"], v["_id"])
+              BSON::DBRef.new(v["_ns"], v["_id"])
             else
               v
             end
@@ -1010,7 +1004,7 @@ module MongoRecord
     def init_ivar(ivar_name, val)
       sym = ivar_name[1..-1].to_sym
       if self.class.subobjects.keys.include?(sym)
-        if val.instance_of? Mongo::DBRef
+        if val.instance_of? BSON::DBRef
           val = self.class.collection.db.dereference(val)
         end
         instance_variable_set(ivar_name, self.class.subobjects[sym].new(val))
@@ -1018,7 +1012,7 @@ module MongoRecord
         klazz = self.class.arrays[sym]
         val = [val] unless val.kind_of?(Array)
         instance_variable_set(ivar_name, val.collect {|v|
-                                if v.instance_of? Mongo::DBRef
+                                if v.instance_of? BSON::DBRef
                                   v = self.class.collection.db.dereference(v)
                                 end
                                 v.kind_of?(MongoRecord::Base) ? v : klazz.new(v)
