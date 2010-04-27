@@ -1,9 +1,9 @@
 = Welcome to MongoRecord
 
-MongoRecord is an ActiveRecord-like framework for the 10gen
-Mongo[http://www.mongodb.org/] database.
+MongoRecord is an ActiveRecord-like framework for
+MongoDB[http://www.mongodb.org/].
 
-This document assumes you have read the Mongo documentation.
+This document assumes you have read the MongoDB documentation.
 
 A quick code sample:
 
@@ -33,16 +33,9 @@ A quick code sample:
 
 == Installation
 
-First set up Gemcutter
-
-  $ gem install gemcutter
-  $ gem tumble
-
-Then install
-
   $ gem install mongo_record
 
-MongoRecord depends on the Mongo Ruby Driver, version 0.15.1 or higher.
+MongoRecord depends on the Mongo Ruby Driver, version 0.20.1 or higher.
 Installing the MongoRecord gem will also install the Mongo Ruby Driver if you
 don't have it already.
 
@@ -90,6 +83,5 @@ Nate Wiger, http://github.com/nateware
 * Scoped dynamic finders to each instance, so rows with varying attributes work
 * Added row.attributes helper to enable use of ActiveRecord::Callbacks if desired
 
-
-
-
+Camilo Lopez
+* Updates for later driver releases.
