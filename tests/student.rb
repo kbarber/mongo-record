@@ -3,7 +3,7 @@ require File.join(File.dirname(__FILE__), 'address')
 
 class Score < MongoRecord::Base
 
-  field :grade
+  field :grade, :graded_at
   has_one :for_course, :class_name => 'Course' # Mongo will store course db reference, not duplicate object
 
   def passed?
@@ -12,6 +12,11 @@ class Score < MongoRecord::Base
 
   def to_s
     "#@for_course: #@grade"
+  end
+
+  def grade=(val)
+    @graded_at = Time.now
+    @grade = val
   end
 
 end

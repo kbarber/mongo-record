@@ -684,7 +684,7 @@ module MongoRecord
         return "'#{val.gsub(/\'/, "\\\\'")}'" # " <= for Emacs font-lock
       end
 
-      def fields_from(a) # :nodoc:
+      def fields_from(a)
         return nil unless a
         a = [a] unless a.kind_of?(Array)
         a += ['_id']            # always return _id
@@ -760,6 +760,7 @@ module MongoRecord
     # Initialize a new object with either a hash of values or a row returned
     # from the database.
     def initialize(row={})
+
       case row
       when Hash
         row.each { |k, val|
@@ -989,22 +990,35 @@ module MongoRecord
     # Initialize ivar. +name+ must include the leading '@'.
     def init_ivar(ivar_name, val)
       sym = ivar_name[1..-1].to_sym
+      value = nil
+
       if self.class.subobjects.keys.include?(sym)
         if val.instance_of? BSON::DBRef
           val = self.class.collection.db.dereference(val)
         end
-        instance_variable_set(ivar_name, self.class.subobjects[sym].new(val))
+        value =  self.class.subobjects[sym].new(val)
+        #instance_variable_set(ivar_name, self.class.subobjects[sym].new(val))
+
       elsif self.class.arrays.keys.include?(sym)
         klazz = self.class.arrays[sym]
         val = [val] unless val.kind_of?(Array)
-        instance_variable_set(ivar_name, val.collect {|v|
-                                if v.instance_of? BSON::DBRef
-                                  v = self.class.collection.db.dereference(v)
-                                end
-                                v.kind_of?(MongoRecord::Base) ? v : klazz.new(v)
-                              })
+
+        value = val.collect do |v|
+          if v.instance_of? BSON::DBRef
+            v = self.class.collection.db.dereference(v)
+          end
+          v.kind_of?(MongoRecord::Base) ? v : klazz.new(v)
+        end
       else
-        instance_variable_set(ivar_name, val)
+
+        value =  val
+      end
+
+      if self.class.field_names.include?(sym)
+        __send__(sym.to_s + '=', value)
+
+      else
+        instance_variable_set(ivar_name, value)
       end
     end
 
