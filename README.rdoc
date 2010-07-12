@@ -11,6 +11,9 @@ A quick code sample:
   require 'mongo'
   require 'mongo_record'
 
+  MongoRecord::Base.connection =
+    Mongo::Connection.new.db('mongorecord-test')
+
   class Track < MongoRecord::Base
     collection_name :tracks
     fields :artist, :album, :song, :track
@@ -20,9 +23,6 @@ A quick code sample:
       "artist: #{artist}, album: #{album}, song: #@song, track: #{@track ? @track.to_i : nil}"
     end
   end
-
-  MongoRecord::Base.connection =
-    Mongo::Connection.new.db('mongorecord-test')
 
   t = Track.new(:artist => 'Level 42', :album => 'Standing In The Light',
                 :song => 'Micro-Kid', :track => 1)
